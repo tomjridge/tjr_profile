@@ -1,0 +1,6 @@
+name="tjr_profile"
+description="Very simple profiling library"
+version="2017-12-29"
+requires="core"
+archive(byte)="tjr_profile.cma"
+archive(native)="tjr_profile.cmxa"
