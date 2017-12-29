@@ -1,15 +1,16 @@
 (* simple profiling ---------------------------------------- *)
 
-(* open Tjr_profile, then use P.(add profiler ab) *)
+let dest_Some = function Some x -> x | _ -> (failwith "dest_Some")
+
+
 type profiler = {
-  mark: int -> unit;
-  mark': int -> bool; (* to make it easier to include in asserts *)
-  get: unit -> (int*int) list
+  mark: int -> unit;  (* imperative mark command *)
+  mark': int -> bool; (* returns true, to make it easier to include in asserts *)
+  get: unit -> (int*int) list  (* return list of all marks *)
 }
 
 
 module P = struct
-  let dest_Some = function Some x -> x | _ -> (failwith "dest_Some")
 
   (* waypoints, typically per-function *)
   let ab = 1
@@ -24,7 +25,7 @@ module P = struct
   let ij = 9
   let jk = 10
 
-  let p_to_string i = (
+  let p_to_string i = 
     match i with
     | _ when i = ab -> "ab"
     | _ when i = ac -> "ac"
@@ -37,16 +38,16 @@ module P = struct
     | _ when i = hi -> "hi"
     | _ when i = ij -> "ij"
     | _ when i = jk -> "jk"
-    | _ -> "FIXME"
-  )              
-
-
+    | _ -> failwith "Unrecognized waypoint"
 end
 
 open P
 
+
 (* assume 64-bit ints, so last conversion is ok  *)
-let now () = Core.Time_stamp_counter.(now () |> to_int63 |> Core.Int63.to_int |> dest_Some)
+let now () = Core.Time_stamp_counter.(
+    now () |> to_int63 |> Core.Int63.to_int |> dest_Some)
+
 
 (* a list of points and their timestamps; typically per function *)
 let mk_profiler () = 
@@ -58,14 +59,15 @@ let mk_profiler () =
   let get () = !xs in
   { mark; mark'; get} 
 
-let print_profile ~xs = (
-  let f last prev = (
+
+let print_profile ~xs =
+  let f last prev = 
     let (p2,t2) = last in
     let (p1,t1) = prev in
     let d = t2 - t1 in
     let s = Printf.sprintf "(%s,%s) %d" (p1|>p_to_string) (p2|>p_to_string) d in
     let _ = print_endline s in
-    prev)
+    prev
   in
   let _ = List.fold_left f (List.hd xs) xs in
-  ())
+  ()
