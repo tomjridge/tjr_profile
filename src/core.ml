@@ -60,16 +60,21 @@ let print_intervals intervals =
 
 
 let print_profile_summary marks =
-  Printf.printf "| Total time | wp1 | wp2 | count\n%!";
-  marks |> marks2intervals |> summarize_intervals |> fun cis ->
-  cis |> List.map
-    (fun (count,i) ->
-       let {p1;p2;delta} = i in
-       (delta, 
-        Printf.sprintf "| %d | %s | %s | %d" 
-          delta 
-          (wp_to_string p1) 
-          (wp_to_string p2) 
-          count))
-  |> List.sort (fun (d1,_) (d2,_) -> d1 - d2)
-  |> List.iter (fun (_,s) -> print_endline s);
+  match marks with
+  | [] -> Printf.printf "No marks available! Did you enable profiling?\n%!"
+  | _ -> 
+    Printf.printf "| Total time | wp1 | wp2 | count | Unit cost |\n%!";
+    marks |> marks2intervals |> summarize_intervals |> fun cis ->
+    cis |> List.map
+      (fun (count,i) ->
+         let {p1;p2;delta} = i in
+         (delta, 
+          Printf.sprintf "| %d | %s | %s | %d | %d |" 
+            delta 
+            (wp_to_string p1) 
+            (wp_to_string p2) 
+            count
+            (delta / count)
+         ))
+    |> List.sort (fun (d1,_) (d2,_) -> d1 - d2)
+    |> List.iter (fun (_,s) -> print_endline s);
