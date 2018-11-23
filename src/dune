@@ -1,3 +1,4 @@
 (library
   (name tjr_profile)
-  (public_name tjr_profile))
+  (public_name tjr_profile)
+  (libraries tjr_polymap))

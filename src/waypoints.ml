@@ -3,7 +3,7 @@
 
 open Types
 
-
+let _EMPTY = 0
 let ab : wp = 1
 let ac : wp = 13
 let bc : wp = 2
@@ -18,6 +18,7 @@ let jk : wp = 10
 
 let wp_to_string i = 
   match i with
+  | _ when i = _EMPTY -> "  "
   | _ when i = ab -> "ab"
   | _ when i = ac -> "ac"
   | _ when i = bc -> "bc"

@@ -1,6 +1,6 @@
 (* simple profiling ---------------------------------------- *)
 
-open Types
+include Types
 open Waypoints
 
 let dest_Some = function Some x -> x | _ -> (failwith "dest_Some")
