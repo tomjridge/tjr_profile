@@ -12,8 +12,7 @@ let get_profiler ~name =
   find_opt name (!profilers)
 
 (** The default profiler. This must be replaced eg with
-    [Core.Time_stamp_counter.(fun () ->
-        now () |> to_int63 |> Core.Int63.to_int |> fun (Some x) -> x)]
+    [Core.Time_stamp_counter.(fun () -> now () |> to_int63 |> Core.Int63.to_int |> fun (Some x) -> x)]
 *)
 
 let now : (unit -> int) ref = ref (fun () -> 
