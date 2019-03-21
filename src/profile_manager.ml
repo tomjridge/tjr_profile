@@ -1,16 +1,18 @@
 (** Provide support for accessing profilers by name *)
 
-open Tjr_map
-open Tjr_map.Map_string
+(* open Misc.StringMap *)
+module StringMap = Map.Make(struct type t = string let compare : t -> t -> int = Pervasives.compare end)
 open Core
 
-let profilers : prof_ops Tjr_map.Map_string.t ref = ref Map_string.empty
+
+
+let profilers : prof_ops StringMap.t ref = ref StringMap.empty
 
 let register_profiler ~name ~profiler =
-  profilers:=add name profiler (!profilers)
+  profilers:=StringMap.add name profiler (!profilers)
 
 let get_profiler ~name =
-  find_opt name (!profilers)
+  StringMap.find_opt name (!profilers)
 
 (** The default profiler. This must be replaced eg with
     [Core.Time_stamp_counter.(fun () -> now () |> to_int63 |> Core.Int63.to_int |> fun (Some x) -> x)]
