@@ -1,9 +1,10 @@
 (** Provide support for accessing profilers by name *)
 
-open Tjr_polymap
+open Tjr_map
+open Tjr_map.Map_string
 open Core
 
-let profilers : (string,prof_ops) Tjr_polymap.t ref = ref (empty_string_map())
+let profilers : prof_ops Tjr_map.Map_string.t ref = ref Map_string.empty
 
 let register_profiler ~name ~profiler =
   profilers:=add name profiler (!profilers)

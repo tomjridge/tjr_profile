@@ -15,6 +15,6 @@ build: [
 ]
 
 depends: [
-  "tjr_polymap"
+  "tjr_lib_core"
 ]
 
