@@ -1,4 +1,4 @@
-DUNE:=opam exec dune
+DUNE:=dune
 
 build:
 	$(DUNE) build @install
@@ -10,15 +10,26 @@ install:
 uninstall:
 	$(DUNE) uninstall
 
+clean:
+	$(DUNE) clean
 
-doc: FORCE
+all:
+	$(MAKE) clean
+	$(MAKE) build
+	$(MAKE) install
+	$(MAKE) docs
+
+
+SRC:=_build/default/_doc/_html
+DST:=docs
+docs: FORCE
 	$(DUNE) build @doc
+	rm -rf $(DST)/*
+	cp -R $(SRC)/* $(DST)
 
 view_doc:
 	google-chrome  _build/default/_doc/_html/index.html
 
-clean:
-	$(DUNE) clean
 
 
 FORCE:
