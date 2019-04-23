@@ -33,7 +33,7 @@ let print_profile_summary ~marks ~waypoint_to_string =
   in
   
   match bindings with
-  | [] -> Printf.printf "No data available! Did you enable profiling?\n%!"
+  | [] -> Printf.printf "No profiling data available! Did you enable profiling?\n%!"
   | _ -> 
     Printf.printf "|  Total time | wp1 | wp2 |    count | Unit cost |\n%!";
     bindings |> List.iter (fun ((w1,w2),(count,time)) -> 
