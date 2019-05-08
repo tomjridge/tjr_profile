@@ -1,3 +1,4 @@
+SHELL:=bash
 DUNE:=dune
 
 build:
