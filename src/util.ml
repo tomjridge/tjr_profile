@@ -1,4 +1,6 @@
-(** Make profiling slightly easier by allowing open Tjr_profile.Profiler or open Tjr_profile.No_profiler *)
+(** Make profiling slightly easier by allowing [open
+   Tjr_profile.Profiler] or [open Tjr_profile.No_profiler]. These use
+   the default string_profiler ref from {!Tjr_profile_core}. *)
 
 open Tjr_profile_core
 
