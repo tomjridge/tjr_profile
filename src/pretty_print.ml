@@ -35,13 +35,19 @@ let print_profile_summary ~marks ~waypoint_to_string =
   match bindings with
   | [] -> Printf.printf "No profiling data available! Did you enable profiling?\n%!"
   | _ -> 
-    Printf.printf "|  Total time | wp1 | wp2 |    count | Unit cost |\n%!";
-    bindings |> List.iter (fun ((w1,w2),(count,time)) -> 
-        Printf.printf "| %11d | %3s | %3s | %8d | %9d |\n%!" 
-          time 
-          (waypoint_to_string w1) 
-          (waypoint_to_string w2) 
-          count
-          (time / count))
+    let csv = 
+      (" Total time | wp1 | wp2 | count | Unit cost" |> String_.split_on_all ~sub:"|")::
+      (bindings |> List.map (fun ((w1,w2),(count,time)) -> 
+           Printf.sprintf " %11d | %3s | %3s | %8d | %9d " 
+             time 
+             (waypoint_to_string w1) 
+             (waypoint_to_string w2) 
+             count
+             (time / count)
+           |> String_.split_on_all ~sub:"|"
+         ))
+    in
+    String_.pp_csv csv
+
 
 let _ = print_profile_summary

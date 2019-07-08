@@ -14,5 +14,5 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 
-depends: [ "core" ]
+depends: [ "tjr_profile" "core" ]
 
