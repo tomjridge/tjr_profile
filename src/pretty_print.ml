@@ -1,6 +1,6 @@
 (** Profile pretty printing; don't use directly *)
 
-open Misc
+open Util
 
 let print_profile_summary ~marks ~waypoint_to_string =
 

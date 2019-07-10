@@ -1,0 +1,66 @@
+(*
+(** This is a profiler that fails if any method is called; useful for
+   checking that all profilers have been initialized (even if only to
+   dummy_profiler) *)
+let failing_profiler = {
+  mark=(fun _ -> failwith (Printf.sprintf "%s: mark\n%s" __MODULE__ __LOC__));
+  get_marks=(fun _ -> failwith (Printf.sprintf "%s: get_marks\n%s" __MODULE__ __LOC__));
+  print_summary=(fun () ->
+    failwith (Printf.sprintf "%s: print_summary\n%s" __MODULE__ __LOC__))      
+}
+  
+
+(** A reference to a dummy profiler, for quick and dirty single-profiler use *)
+let string_profiler : string profiler ref = ref dummy_profiler
+*)
+
+
+(** Make profiling slightly easier by allowing [open
+   Tjr_profile.Profiler] or [open Tjr_profile.No_profiler]. These use
+   the default string_profiler ref from {!Tjr_profile_core}. *)
+
+(*
+open Tjr_profile_core
+
+module type PROFILER = sig
+  val mark: string -> unit
+  val profile: string -> (unit -> 'a) -> 'a 
+end
+
+module Profiler : PROFILER = struct
+  let profiler: string profiler ref = string_profiler
+
+  let profile x y z =
+    !profiler.mark x;
+    let r = z() in
+    !profiler.mark y;
+    r
+
+  let profile x z = 
+    profile x (x^"'") z
+
+  let mark x = !profiler.mark x
+end
+(* include Profiler *)
+
+module No_profiler : PROFILER = struct
+  let mark _x = ()
+  let profile _x y = y ()
+end
+
+*)
+
+(*
+(** The [now] argument is a timer. This should be eg 
+      [Core.Time_stamp_counter.(fun () -> now () |> to_int63 |> Core.Int63.to_int |> fun (Some x) -> x)] *)
+let make_int_profiler ~now = 
+  let marks = ref [] in
+  (* record time at a particular point in the code; typically put this
+     in an assert, and disable in production *)
+  let mark waypoint = marks := (waypoint,now())::!marks in
+  let get_marks () = !marks in
+  let print_summary () = 
+    Pretty_print.print_profile_summary ~marks:!marks ~waypoint_to_string:string_of_int
+  in   
+  { mark; get_marks; print_summary }
+*)

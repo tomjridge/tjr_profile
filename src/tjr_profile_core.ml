@@ -1,52 +1,42 @@
 (** Simple profiling. *)
 
-include Types
+open Profile_intf
 
+(** This is a reference to an (optional) timer; it must be initialized
+   before calling make_string_profiler *)
+let now : (unit -> int) option ref = 
+  (* Printf.printf "%s: now is a mutable reference\n" __MODULE__; *)
+  ref None 
 
-(** The [now] argument is a timer. This should be eg 
-      [Core.Time_stamp_counter.(fun () -> now () |> to_int63 |> Core.Int63.to_int |> fun (Some x) -> x)] *)
-let make_int_profiler ~now = 
-  let marks = ref [] in
-  (* record time at a particular point in the code; typically put this
-     in an assert, and disable in production *)
-  let mark waypoint = marks := (waypoint,now())::!marks in
-  let get_marks () = !marks in
-  let print_summary () = 
-    Pretty_print.print_profile_summary ~marks:!marks ~waypoint_to_string:string_of_int
-  in   
-  { mark; get_marks; print_summary }
-
-let make_string_profiler ~now =
+let make_string_profiler () =
+  let now = !now |> function Some now -> now | None -> 
+      failwith (Printf.sprintf "%s: now reference not set" __MODULE__)
+  in
   let marks = ref [] in
   let mark waypoint = marks := (waypoint,now())::!marks in
   let get_marks () = !marks in
   let print_summary () = 
     Pretty_print.print_profile_summary ~marks:!marks ~waypoint_to_string:(fun x -> x)
   in   
-  { mark; get_marks; print_summary }
+  let time_function s f = 
+    let a = now () in
+    let r = f () in
+    let b = now () in
+    Printf.printf "%s, %s: %d\n" "Profiling" s (b-a);
+    r
+  in
+  { mark; get_marks; print_summary; time_function }
 
 
 (** Use this as a placeholder (eg via a reference) which is
    subsequently replaced by the main executable. *)
-let dummy_profiler = {
+let dummy_profiler : string profiler = {
   mark=(fun _ -> ());
   get_marks=(fun _ -> []);
   print_summary=(fun () ->
-      Printf.printf "%s: this is a dummy profiler!\n%!" __FILE__)
+      Printf.printf "%s: this is a dummy profiler!\n%!" __FILE__);
+  time_function=(fun _s f -> f ())
 }
 
 let _ = dummy_profiler
 
-(** This is a profiler that fails if any method is called; useful for
-   checking that all profilers have been initialized (even if only to
-   dummy_profiler) *)
-let failing_profiler = {
-  mark=(fun _ -> failwith (Printf.sprintf "%s: mark\n%s" __MODULE__ __LOC__));
-  get_marks=(fun _ -> failwith (Printf.sprintf "%s: get_marks\n%s" __MODULE__ __LOC__));
-  print_summary=(fun () ->
-    failwith (Printf.sprintf "%s: print_summary\n%s" __MODULE__ __LOC__))      
-}
-  
-
-(** A reference to a dummy profiler, for quick and dirty single-profiler use *)
-let string_profiler : string profiler ref = ref dummy_profiler
