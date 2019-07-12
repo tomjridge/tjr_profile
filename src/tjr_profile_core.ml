@@ -2,41 +2,59 @@
 
 open Profile_intf
 
-(** This is a reference to an (optional) timer; it must be initialized
-   before calling make_string_profiler *)
-let now : (unit -> int) option ref = 
-  (* Printf.printf "%s: now is a mutable reference\n" __MODULE__; *)
-  ref None 
+(** The underlying timing method is controlled by optcomp [PROFILING_USE_TSC] variable. *)
+
+[%%import "/tmp/optcomp_config.ml"]
+
+[%%if PROFILING_USE_TSC]
+
+(** We ARE using TSC for profiling. *)
+let profiling_use_tsc = true
+
+let now = 
+  let open Core in
+  let open Time_stamp_counter in
+  let calibrator = Lazy.force calibrator in
+  fun () -> now () 
+            |> to_time_ns ~calibrator 
+            |> Time_ns.to_int_ns_since_epoch
+
+[%%else]
+
+(** We ARE NOT using TSC for profiling. *)
+let profiling_use_tsc = false
+
+let now = 
+  let open Core_kernel in 
+  let open Time_ns in
+  fun () -> now ()
+            |> to_int63_ns_since_epoch
+
+[%%endif]
 
 let make_string_profiler () =
-  let now = !now |> function Some now -> now | None -> 
-      failwith (Printf.sprintf "%s: now reference not set" __MODULE__)
-  in
   let marks = ref [] in
   let mark waypoint = marks := (waypoint,now())::!marks in
   let get_marks () = !marks in
   let print_summary () = 
     Pretty_print.print_profile_summary ~marks:!marks ~waypoint_to_string:(fun x -> x)
   in   
-  let time_function s f = 
-    let a = now () in
-    let r = f () in
-    let b = now () in
-    Printf.printf "%s, %s: %d\n" "Profiling" s (b-a);
-    r
-  in
-  { mark; get_marks; print_summary; time_function }
+  { mark; get_marks; print_summary }
 
+(** Measure execution time, and print result on output *)
+let measure_execution_time_and_print s f =
+  let a = now () in
+  f () |> fun r -> 
+  let b = now () in
+  Printf.printf "%s %d\n" s (b-a);
+  r
 
-(** Use this as a placeholder (eg via a reference) which is
-   subsequently replaced by the main executable. *)
-let dummy_profiler : string profiler = {
-  mark=(fun _ -> ());
-  get_marks=(fun _ -> []);
-  print_summary=(fun () ->
-      Printf.printf "%s: this is a dummy profiler!\n%!" __FILE__);
-  time_function=(fun _s f -> f ())
-}
-
-let _ = dummy_profiler
-
+(** Measure the execution time of a function, call a function
+   [with_time] that takes the execution time and returns unit, and
+   finally return the result of the function *)
+let measure_execution_time ~with_time f =
+  let a = now () in
+  f () |> fun r -> 
+  let b = now () in
+  with_time (b-a);
+  r

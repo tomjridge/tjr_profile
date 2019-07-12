@@ -1,0 +1,16 @@
+lib: [
+  "_build/install/default/lib/tjr_profile_with_core/META"
+  "_build/install/default/lib/tjr_profile_with_core/dune-package"
+  "_build/install/default/lib/tjr_profile_with_core/opam"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.a"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cma"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cmi"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cmt"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cmx"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cmxa"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.cmxs"
+  "_build/install/default/lib/tjr_profile_with_core/tjr_profile_with_core.ml"
+]
+doc: [
+  "_build/install/default/doc/tjr_profile_with_core/README.md"
+]
