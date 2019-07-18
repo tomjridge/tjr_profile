@@ -12,4 +12,3 @@ type 'waypoint profiler = {
   print_summary: unit -> unit;
 }
 
-

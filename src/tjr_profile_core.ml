@@ -60,8 +60,8 @@ module Make_profiler() =
 struct
 [%%if PROFILING_ENABLED]
 (* NOTE this code parallels that in Tjr_profile_with_core *)
-let internal_profiler = Tjr_profile.make_string_profiler ()
-let mark = internal_profiler.mark [@@inline]
+let internal_profiler = make_string_profiler ()
+let mark = internal_profiler.mark 
 let profile s f = mark s; f() |> fun r -> mark (s^"'"); r [@@inline]
 let print_summary () = internal_profiler.print_summary() [@@inline]
 [%%else]

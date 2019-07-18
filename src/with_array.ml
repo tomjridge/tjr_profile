@@ -29,7 +29,22 @@ module Make_string_enumeration() = struct
   include Make_enumeration(struct type t = string end)
 end
 
-module Make_profiler() = struct
+(** NOTE we do not check access to the array; if profiling exceeds the cap an exception will occur *)
+module Make_profiler(S:sig val cap:int end) 
+: sig
+  val allocate_int : string -> int
+  (* val s2i : string -> int *)
+  (* val s2i_opt : string -> int option *)
+  (* val i2s : int -> string *)
+  (* val i2s_opt : int -> string option *)
+  (* val cap : int *)
+  (* module A = Bigarray.Array2 *)
+  (* val marks : (int, Bigarray.int_elt, Bigarray.c_layout) A.t *)
+  (* val ptr : int ref *)
+  val mark : int -> unit
+  val print_summary : unit -> unit
+end
+= struct
 
   include Make_string_enumeration()
 
@@ -37,7 +52,7 @@ module Make_profiler() = struct
 
   (* FIXME not sure what initial cap should be; presumably this takes
      a long time to allocate? *)
-  let cap = 2e9
+  let cap = S.cap
 
   module A = Bigarray.Array2
 
@@ -45,7 +60,7 @@ module Make_profiler() = struct
     A.create 
       Bigarray.Int
       Bigarray.c_layout
-      (int_of_float cap)
+      cap
       2
 
   let ptr = ref 0  (* index into marks *)
