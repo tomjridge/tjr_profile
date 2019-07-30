@@ -15,6 +15,7 @@ build: [
 ]
 
 depends: [
+  "core" # for TSC
   "tjr_lib_core"
 ]
 
