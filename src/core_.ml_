@@ -1,0 +1,30 @@
+(** Simple profiling. *)
+
+open Intf_
+open Optcomp_config
+
+
+(*
+(** A functorial version, which perhaps is better optimized than the
+   record version *)
+
+[%%import "optcomp_config_.ml"]
+
+module Make_string_profiler() 
+  : sig
+    val mark : string -> unit
+    val print_summary : unit -> unit
+  end
+= 
+struct
+  [%%if PROFILING_ENABLED]
+  (* NOTE this code parallels that in Tjr_profile_with_core *)
+  let internal_profiler = make_string_profiler ()
+  let mark = internal_profiler.mark 
+  let print_summary () = internal_profiler.print_summary() [@@inline]
+  [%%else]
+  let mark (_s:string) = () [@@inline]
+  let print_summary () = () [@@inline]
+  [%%endif]
+end
+*)

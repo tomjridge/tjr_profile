@@ -2,7 +2,5 @@
 
 [%%define PROFILING_ENABLED true]
 
-[%%define PROFILING_SINGLE_ENABLED true]
-
 
 

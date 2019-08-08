@@ -2,26 +2,16 @@
    module records those values as OCaml values. *)
 include Optcomp_config
 
-module Profile_single = Profile_single
+module Profile_intf = Intf_
+include Profile_intf
+
+include Util
+
+module Profile_single_function = Profile_single_function
 
 module With_array = With_array
 
-include Profile_intf
+let intern = Intern.intern
 
-include Tjr_profile_core
+let make_profiler = With_array.make_profiler
 
-
-module Dummy_string_profiler = struct
-  let mark (_s:string) = () [@@inline]
-let profile (_s:string) (f:unit -> 'a) = f () [@@inline]
-let print_summary () = () [@@inline]
-end
-
-module Dummy_int_profiler = struct
-let allocate_int _s = 0
-  let mark (_s:int) = () [@@inline]
-let profile (_s:int) (f:unit -> 'a) = f () [@@inline]
-let print_summary () = () [@@inline]
-end
-
-(* module Util = Util *)
