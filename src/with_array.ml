@@ -75,12 +75,12 @@ end
   let print_summary () = 
     (* build a list, then call the standard print routine based on
        strings FIXME horribly inefficient *)
-    (0,[]) |> List_.iter_break (fun (p,xs) -> 
+    (0,[]) |> iter_break (fun (p,xs) -> 
         match p >= !ptr with 
-        | true -> `Break xs
+        | true -> Break xs
         | false -> 
           let (t,i) = A.(get marks p 0,get marks p 1) in
-          `Continue(p+1,(i,t)::xs))
+          Cont(p+1,(i,t)::xs))
     |> fun marks -> 
     Pretty_print.print_profile_summary ~marks ~waypoint_to_string:i2s
 
