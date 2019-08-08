@@ -15,3 +15,4 @@ let intern = Intern.intern
 
 let make_profiler = With_array.make_profiler
 
+let dummy_profiler = Util.dummy_profiler  

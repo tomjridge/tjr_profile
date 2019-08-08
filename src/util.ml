@@ -96,3 +96,9 @@ let measure_execution_time f =
   let b = now () in
   let t = b - a in
   Timed_result.{result=r;time=t}
+
+let dummy_profiler = { 
+  mark=(fun _m -> ());
+  time_thunk=(fun _m f -> f());
+  get_marks=(fun () -> []);
+  print_summary=fun () -> () }

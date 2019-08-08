@@ -31,3 +31,5 @@ module Timed_result = struct
 end
 type 'a timed_result = 'a Timed_result.timed_result
   
+
+exception Profiling_exception of string

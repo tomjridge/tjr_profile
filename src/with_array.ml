@@ -10,15 +10,11 @@ module Intern = Util.Intern
 
 (** Make a profiler which uses an 2D array of ints to record
    marks. NOTE this is affected by optcomp config. *)
-let make_profiler ?(print_header="") ?(cap=1_000_000) 
+let make_profiler ?(print_header="") ?(cap=10_000_000) 
     ?(print_at_exit=true) () 
   =
   match profiling_enabled with
-  | false -> 
-    { mark=(fun _m -> ());
-      time_thunk=(fun _m f -> f());
-      get_marks=(fun () -> []);
-      print_summary=fun () -> () }
+  | false -> Util.dummy_profiler
   | true -> 
     let module Internal = struct
 
@@ -36,9 +32,13 @@ let make_profiler ?(print_header="") ?(cap=1_000_000)
 
       let mark i = A.(
           let n = !ptr in
-          set marks n 0 (now());
-          set marks n 1 i;
-          ptr:=n+1)
+          try
+            set marks n 0 (now());
+            set marks n 1 i;
+            ptr:=n+1
+          with Invalid_argument _ -> 
+            Profiling_exception "index out of range... too many marks"
+            |> raise)
 
       let time_thunk m f =
         mark m;
