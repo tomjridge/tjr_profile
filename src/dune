@@ -2,7 +2,7 @@
   (name tjr_profile)
   (public_name tjr_profile)
   (flags (:standard -open Tjr_lib_core))
-  (preprocessor_deps (file "optcomp_config_.ml"))
+  (preprocessor_deps (file "config.ml"))
   (preprocess (pps ppx_optcomp))
   (libraries tjr_lib_core ppx_optcomp core)  ;; core for TSC
 )

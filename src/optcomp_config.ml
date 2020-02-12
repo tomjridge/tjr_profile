@@ -1,4 +1,4 @@
-[%%import "optcomp_config_.ml"]
+[%%import "config.ml"]
 
 (** The underlying timing method is controlled by optcomp
    [PROFILING_USE_TSC] variable. *)
