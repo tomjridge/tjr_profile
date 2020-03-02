@@ -1,4 +1,0 @@
-[%%define PROFILING_ENABLED false]
-
-[%%define PROFILING_USE_TSC true] 
-

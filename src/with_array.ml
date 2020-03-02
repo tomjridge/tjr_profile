@@ -37,8 +37,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
             set marks n 1 i;
             ptr:=n+1
           with Invalid_argument _ -> 
-            Profiling_exception "index out of range... too many marks"
-            |> raise)
+            Printf.printf "WARNING!!! %s: too many marks; profiling data will be incomplete" __LOC__
+            (* Profiling_exception "index out of range... too many marks" |> raise *)
+        )
 
       let time_thunk m f =
         mark m;
