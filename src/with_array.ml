@@ -30,6 +30,8 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
 
       let ptr = ref 0  (* index into marks *)
 
+      let already_warned = ref false
+
       let mark i = A.(
           let n = !ptr in
           try
@@ -37,7 +39,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
             set marks n 1 i;
             ptr:=n+1
           with Invalid_argument _ -> 
-            Printf.printf "WARNING!!! %s: too many marks; profiling data will be incomplete" __LOC__
+            (if !already_warned then () else 
+               Printf.printf "WARNING!!! %s: too many marks; profiling data will be incomplete" __LOC__;
+             already_warned:=true)
             (* Profiling_exception "index out of range... too many marks" |> raise *)
         )
 
