@@ -84,7 +84,7 @@ let measure_execution_time_and_print msg f =
   let a = now () in
   f () |> fun r -> 
   let b = now () in
-  Printf.printf "%s %d\n" msg (b-a);
+  Printf.printf "%s %#d\n" msg (b-a);
   r
 
 (** Measure the execution time of a function, and return the function
