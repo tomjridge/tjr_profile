@@ -40,7 +40,7 @@ let print_profile_summary ?(print_header="(unnamed profiler)") ~marks
       match bindings with
       | [] -> 
         Printf.printf 
-          "%s: No profiling data available! Did you enable profiling?\n%!"
+          "%s: No profiling data available!\n%!"
           print_header
       | _ -> 
         let f e = e |> fun ((w1,w2),(count,time)) -> 
