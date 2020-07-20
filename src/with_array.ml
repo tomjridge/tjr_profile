@@ -3,10 +3,52 @@
    to compute the summary).
 
  *)
+
 open Optcomp_config
+
 open Intf_
 
-module Intern = Util.Intern
+module Pvt = struct
+  (* similar, but adding s->n also adds s'->-n; useful for making pairs
+     of marks eg for begin and end of a function *)
+  module Make_intern_2(S:sig type t val prime: t -> t end) = struct
+    open S
+    let to_int = Hashtbl.create 100
+    let from_int = Hashtbl.create 100
+    let free = ref 1 (* reserve 0 for special cases *)
+
+    let t2i s = Hashtbl.find to_int s
+    let t2i_opt s = Hashtbl.find_opt to_int s
+
+    let i2t i = Hashtbl.find from_int i
+    let i2t_opt i = Hashtbl.find_opt from_int i
+
+    (** Intern an object (allocate an integer for it) *)
+    let intern (s:S.t) = 
+      t2i_opt s |> function
+      | None -> 
+        let n = !free in
+        Hashtbl.add to_int s n;
+        Hashtbl.add to_int (prime s) (-1*n); (* add s' as -n *)
+        Hashtbl.add from_int n s;
+        Hashtbl.add from_int (-1*n) (prime s);
+        free:=n + 1;
+        n
+      | Some i -> i
+  end
+
+  module Intern = struct
+    include Make_intern_2(struct type t = string let prime s = s^"'" end)
+    let s2i = t2i
+    let s2i_opt = t2i_opt
+    let i2s = i2t
+    let i2s_opt = i2t_opt
+  end
+end
+
+open Pvt
+
+let intern = Intern.intern
 
 (** Make a profiler which uses an 2D array of ints to record
    marks. NOTE this is affected by optcomp config. *)
@@ -14,10 +56,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
     ?(print_at_exit=true) () 
   =
   match profiling_enabled with
-  | false -> Util.dummy_profiler
+  | false -> dummy_profiler
   | true -> 
-    let module Internal = struct
-
+    let open (struct
       module A = Bigarray.Array2
 
       (* (n,0) holds the time; (n,1) holds the mark id *)
@@ -30,7 +71,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
 
       let ptr = ref 0  (* index into marks *)
 
-      let already_warned = ref false
+      let warning = lazy (
+        Printf.printf "WARNING!!! %s: too many marks; profiling data \
+                       will be incomplete" __LOC__)
 
       let mark i = A.(
           let n = !ptr in
@@ -39,13 +82,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
             set marks n 1 i;
             ptr:=n+1
           with Invalid_argument _ -> 
-            (if !already_warned then () else 
-               Printf.printf "WARNING!!! %s: too many marks; profiling data will be incomplete" __LOC__;
-             already_warned:=true)
-            (* Profiling_exception "index out of range... too many marks" |> raise *)
-        )
+            Lazy.force warning)
 
-      let time_thunk m f =
+      let _time_thunk m f =
         mark m;
         let r = f () in
         mark (-1*m); (* NOTE assume this mark is present *)
@@ -67,9 +106,9 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
           ~mark_to_string:Intern.i2s ()
         
       let _ = if print_at_exit then Pervasives.at_exit print_summary
-    end
+    end)
     in
-    Internal.{mark;time_thunk;get_marks;print_summary}
+    {mark;get_marks;print_summary}
 
 let _
 : ?print_header:string ->

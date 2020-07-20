@@ -1,17 +1,37 @@
-# Very simple profiling library
+# Tjr_profile: A simple profiling library
 
-This was formerly in `tjr_lib`, but was moved to a separate package so
-that `tjr_lib` does not depend on `Core`.
 
-Actually, now the code is independent of Core (you can provide
-`Core.Time_stamp_counter` when constructing a profiler).
+OCamldoc: <https://tomjridge.github.io/ocamldocs/>
 
-For an example of use, see `tjr_simple_earley`. The idea is to log the
-time at various "waypoints" in the code, then to print out the time
-between each waypoint to establish code paths that need to be
-optimized. `Waypoints` contains some pre-defined waypoint labels, but
-labels can be any integer.
+Usage:
 
-More recent example in `Tjr_kv.store_with_lru,test`, with marking in
-`multithreaded_lru.ml`
+~~~
+  let { mark; _ } = 
+    if profiling_enabled 
+    then make_profiler 
+        ~print_header:(Printf.sprintf "bt blk profiler (bt/%s)" __FILE__) ()
+    else dummy_profiler
 
+  (* Locations / waypoints *)
+  let [loc1;loc2] = 
+    ["loc1";"loc2"] |> List.map intern
+  [@@ocaml.warning "-8"]
+
+  (* Measure execution time of f (for each invocation) and print summary at exit. *)
+  let mark' f = 
+    mark loc1;
+    f () |> fun r ->
+    mark (-1*loc1);
+    r
+~~~
+
+
+## Notes
+
+We are trying to keep most of the code platform independent. Our
+preferred timing mechanism is the very low level kernel "Time stamp
+counters (TSC)". This is currently supported only by Jane Street's
+Core library. But Core is dependent on a Linux environment. So we need
+to provide a way to avoid dependence on Core when deploying to other
+environments. At the moment this is controlled via optcomp
+configuration.

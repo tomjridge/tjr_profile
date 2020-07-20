@@ -8,7 +8,7 @@
 (** We ARE using TSC for profiling. *)
 let profiling_use_tsc = true
 
-let now = 
+let now : unit -> int = 
   let open Core in
   let open Time_stamp_counter in
   let calibrator = Lazy.force calibrator in
@@ -21,7 +21,7 @@ let now =
 (** We ARE NOT using TSC for profiling. *)
 let profiling_use_tsc = false
 
-let now = 
+let now : unit -> int = 
   let open Core_kernel in 
   let open Time_ns in
   fun () -> now ()

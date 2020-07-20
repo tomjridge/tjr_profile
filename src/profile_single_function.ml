@@ -1,9 +1,20 @@
-(** Profile a single function using "enter" and "exit". The function
-   may be called many times. This keeps track of the number of times,
-   and the total time. *)
+(** Profile a single function which may be called many times, using
+   "enter" and "exit". This code keeps track of the number of times, and
+   the total time. *)
 
 open Optcomp_config
-open Intf_
+(* open Intf_ *)
+
+type stats = {
+  total : int;
+  count : int
+}
+
+type profile_single = {
+  enter     : unit -> unit;
+  exit      : unit -> unit;
+  get_stats : unit -> stats
+}
 
 let make ?(print_at_exit=true) ?(print_header="") () = 
   match profiling_enabled with
@@ -13,7 +24,7 @@ let make ?(print_at_exit=true) ?(print_header="") () =
       exit=dummy; 
       get_stats=(fun () -> {total= -1;count= -1}) }
   | true ->   
-    let module A = struct
+    let open(struct
       let total = ref 0
       let count = ref 0
       let current = ref 0
@@ -31,7 +42,7 @@ let make ?(print_at_exit=true) ?(print_header="") () =
       let _ = if print_at_exit then Pervasives.at_exit print
 
       let get_stats () = { total=(!total); count=(!count) }
-    end
+    end)
     in
-    A.{enter;exit;get_stats}
+    {enter;exit;get_stats}
 

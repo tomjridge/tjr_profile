@@ -1,3 +1,4 @@
+(*
 open Intf_
 open Optcomp_config
 
@@ -10,6 +11,9 @@ let iter_opt (f:'a -> 'a option) =
   in
   fun x -> loop x
 *)
+
+
+
 
 
 (** Intern (allocate an integer for) objects FIXME move to tjr_lib *)
@@ -38,6 +42,7 @@ module Make_intern(S:sig type t end) = struct
       n
     | Some i -> i
 end
+module Intern = Util.Intern
 
 (* similar, but adding s->n also adds s'->-n; useful for making pairs
    of marks eg for begin and end of a function *)
@@ -78,27 +83,6 @@ end
 
 
 
-(** Measure execution time, and print result on output
-   immediately. This is not affected by optcomp config. *)
-let measure_execution_time_and_print msg f =
-  let a = now () in
-  f () |> fun r -> 
-  let b = now () in
-  Printf.printf "%s %#d\n" msg (b-a);
-  r
 
-(** Measure the execution time of a function, and return the function
-   result and the execution time. This is not affected by optcomp
-   config. *)
-let measure_execution_time f =
-  let a = now () in
-  f () |> fun r -> 
-  let b = now () in
-  let t = b - a in
-  Timed_result.{result=r;time=t}
 
-let dummy_profiler = { 
-  mark=(fun _m -> ());
-  time_thunk=(fun _m f -> f());
-  get_marks=(fun () -> []);
-  print_summary=fun () -> () }
+*)
