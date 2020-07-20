@@ -1,5 +1,32 @@
 (** Profiling is controlled via optcomp flags. The {!Optcomp_config}
-   module records those values as OCaml values. *)
+   module records those values as OCaml values. 
+
+Example (see Example module in Tjr_profile):
+{[
+  let f () = 
+    (* do something *)
+    1+2
+
+  (** waypoint *)
+  let pt = intern "pt"
+
+  let profiler = make_profiler ()
+  let {mark;_} = profiler
+
+  let profiled_f () = 
+    mark pt;
+    let r = f () in
+    mark (-1*pt);
+    r
+
+  (** Run f 100 times, and print the profiling results at exit *)
+  let do_it () = 
+    for i = 0 to 100 do
+      ignore(profiled_f())
+    done
+]}
+
+*)
 
 
 (** {2 Configuation} *)
@@ -24,10 +51,6 @@ let make_profiler = With_array.make_profiler
 let intern = With_array.intern
 
 
-(* let intern = Util.Intern.intern *)
-
-
-(* let dummy_profiler = Util.dummy_profiler   *)
 
 (** {2 Profile a single function} *)
 
@@ -42,6 +65,37 @@ let measure_execution_time_and_print msg f =
   Printf.printf "%s %#d\n" msg (b-a);
   r
 
+
+(** {2 Example} *)
+
+module Example() = struct
+
+  let f () = 
+    (* do something *)
+    1+2
+
+  (** waypoint *)
+  let pt = intern "pt"
+
+  let profiler = make_profiler ()
+  let {mark;_} = profiler
+
+  let profiled_f () = 
+    mark pt;
+    let r = f () in
+    mark (-1*pt);
+    r
+
+  (** Run f 100 times, and print the profiling results at exit *)
+  let do_it () = 
+    for i = 0 to 100 do
+      ignore(profiled_f())
+    done[@@warning "-35"]
+
+end
+
+
+
 (*
 (** Measure the execution time of a function, and return the function
    result and the execution time. This is not affected by optcomp
@@ -53,3 +107,4 @@ let measure_execution_time f =
   let t = b - a in
   Timed_result.{result=r;time=t}
 *)
+

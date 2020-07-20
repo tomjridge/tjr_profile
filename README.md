@@ -3,27 +3,7 @@
 
 OCamldoc: <https://tomjridge.github.io/ocamldocs/>
 
-Usage:
-
-~~~
-  let { mark; _ } = 
-    if profiling_enabled 
-    then make_profiler 
-        ~print_header:(Printf.sprintf "bt blk profiler (bt/%s)" __FILE__) ()
-    else dummy_profiler
-
-  (* Locations / waypoints *)
-  let [loc1;loc2] = 
-    ["loc1";"loc2"] |> List.map intern
-  [@@ocaml.warning "-8"]
-
-  (* Measure execution time of f (for each invocation) and print summary at exit. *)
-  let mark' f = 
-    mark loc1;
-    f () |> fun r ->
-    mark (-1*loc1);
-    r
-~~~
+Usage: See the ocamldoc
 
 
 ## Notes
