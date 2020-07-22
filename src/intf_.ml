@@ -11,15 +11,15 @@ type 'waypoint profiler = {
   mark          : 'waypoint -> unit; 
   get_marks     : unit -> ('waypoint*int) list;
   print_summary : unit -> unit;
+  time_thunk : 'a. 'waypoint -> (unit -> 'a) -> 'a;
 }
-(* time_thunk : 'a. 'waypoint -> (unit -> 'a) -> 'a; *)
 
 let dummy_profiler = { 
   mark          = (fun _m -> ());
   get_marks     = (fun () -> []);
-  print_summary = fun () -> () 
+  print_summary = (fun () -> ());
+  time_thunk    = (fun _m f -> f());
 }
-  (* time_thunk=(fun _m f -> f()); *)
 
 
 (*

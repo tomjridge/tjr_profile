@@ -84,7 +84,7 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
           with Invalid_argument _ -> 
             Lazy.force warning)
 
-      let _time_thunk m f =
+      let time_thunk m f =
         mark m;
         let r = f () in
         mark (-1*m); (* NOTE assume this mark is present *)
@@ -108,7 +108,7 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
       let _ = if print_at_exit then Pervasives.at_exit print_summary
     end)
     in
-    {mark;get_marks;print_summary}
+    {mark;get_marks;print_summary;time_thunk}
 
 let _
 : ?print_header:string ->
