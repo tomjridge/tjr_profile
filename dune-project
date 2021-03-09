@@ -15,6 +15,5 @@
  (synopsis "A simple profiling library")
  (depends 
 core ;; for TSC
-tjr_lib_core
 ))
 

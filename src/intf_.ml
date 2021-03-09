@@ -21,26 +21,4 @@ let dummy_profiler = {
   time_thunk    = (fun _m f -> f());
 }
 
-
-(*
-type stats = {
-  total:int;
-  count:int
-}
-
-type profile_single = {
-  enter : unit -> unit;
-  exit : unit -> unit;
-  get_stats : unit -> stats
-}
-
-module Timed_result = struct
-  type 'a timed_result = {
-    result:'a;
-    time:int
-  }
-end
-type 'a timed_result = 'a Timed_result.timed_result
-*)  
-
 exception Profiling_exception of string

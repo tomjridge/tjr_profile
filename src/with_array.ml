@@ -59,6 +59,7 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
   | false -> dummy_profiler
   | true -> 
     let open (struct
+      open Util
       module A = Bigarray.Array2
 
       (* (n,0) holds the time; (n,1) holds the mark id *)
@@ -93,12 +94,12 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
       let get_marks () = 
         (* build a list, then call the standard print routine based on
            strings FIXME horribly inefficient *)
-        (0,[]) |> iter_break (fun (p,xs) -> 
+        (0,[]) |> iter_k (fun ~k (p,xs) -> 
             match p >= !ptr with 
-            | true -> Break xs
+            | true -> xs
             | false -> 
               let (t,i) = A.(get marks p 0,get marks p 1) in
-              Cont(p+1,(i,t)::xs))
+              k (p+1,(i,t)::xs))
 
       let print_summary () = 
         get_marks () |> fun marks -> 
