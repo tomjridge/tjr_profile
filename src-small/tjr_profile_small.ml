@@ -2,7 +2,14 @@
 
 module Small_intf = Small_intf
 
-module Small_impl = Small.Make_2
+(** Standard implementation *)
+module Small_impl : Small_intf.T = Small.Make_2
 
-module Small_stub = Small.Make_3
+(** Stub implementation *)
+module Small_stub : Small_intf.T = Small.Make_3
 
+module Private = struct
+
+  module Small = Small
+
+end

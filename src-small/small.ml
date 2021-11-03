@@ -35,6 +35,8 @@ module Make_1 = struct
 
 end
 
+(** Functionality to create a named timer, get the current time, and
+   add a given duration to a timer *)
 module Make_2 : T = Make_1
 
 
