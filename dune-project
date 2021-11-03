@@ -1,4 +1,4 @@
-(lang dune 2.0)
+(lang dune 2.8)
 (name tjr_profile)
 
 ;; for opam
@@ -16,4 +16,5 @@
  (depends 
    core ;; for TSC
 ))
+
 

@@ -7,11 +7,12 @@ homepage: "https://github.com/tomjridge/tjr_profile"
 doc: "https://tomjridge.github.io/ocamldocs/"
 bug-reports: "https://github.com/tomjridge/tjr_profile/issues"
 depends: [
-  "dune" {>= "2.0"}
+  "dune" {>= "2.8"}
   "core"
+  "odoc" {with-doc}
 ]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"

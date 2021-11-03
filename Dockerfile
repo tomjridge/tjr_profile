@@ -1,5 +1,5 @@
 # 4.12 catapult field error https://gist.github.com/tomjridge/4ae00299f3964c62828e7004319a9814
-FROM ocaml/opam2:4.11
+FROM ocaml/opam
 
 # some of the following apt packages are likely already installed
 RUN sudo apt-get install -y git make
