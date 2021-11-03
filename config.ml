@@ -1,1 +1,1 @@
-src/config.ml
+src-core/config.ml

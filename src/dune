@@ -1,7 +1,7 @@
+(env 
+ (_ (flags (:standard -open Tjr_profile_core))))
+
 (library
-  (name tjr_profile)
-  (public_name tjr_profile)
-  (preprocessor_deps (file "config.ml"))
-  (preprocess (pps ppx_optcomp))
-  (libraries ppx_optcomp core core.time_stamp_counter)  ;; core for TSC
-)
+ (name tjr_profile)
+ (public_name tjr_profile)
+ (libraries tjr_profile_core))

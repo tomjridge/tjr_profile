@@ -1,3 +1,8 @@
+(** This is an optcomp configuration file. It imports a raw optcomp
+   file from "config.ml" which defines two optcomp variables:
+   PROFILING_USE_TSC and PROFILING_ENABLED. The rest of the file is
+   optcomp-filtered OCaml. *)
+
 [%%import "config.ml"]
 
 (** The underlying timing method is controlled by optcomp
