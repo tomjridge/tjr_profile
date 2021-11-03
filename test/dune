@@ -1,0 +1,4 @@
+(executable
+ (name "test")
+ (modules Test)
+ (libraries tjr_profile))

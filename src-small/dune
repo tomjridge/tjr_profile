@@ -1,0 +1,4 @@
+(library
+ (name tjr_profile_small)
+ (public_name tjr_profile.small)
+ (libraries tjr_profile_core))

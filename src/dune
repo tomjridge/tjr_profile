@@ -4,4 +4,4 @@
 (library
  (name tjr_profile)
  (public_name tjr_profile)
- (libraries tjr_profile_core))
+ (libraries tjr_profile_core tjr_profile_small))
