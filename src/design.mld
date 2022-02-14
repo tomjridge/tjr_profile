@@ -13,9 +13,12 @@
 
 {[
 type timer
+type name = string
 
 (** At module initialization time *)
-val create_timer: ?(print_at_exit:bool (* default true *)) -> unit -> timer
+val create_timer: 
+?(print_at_exit:bool (* default true *)) -> 
+name -> timer
 
 (** At runtime *)
 val start_timer: timer -> unit
