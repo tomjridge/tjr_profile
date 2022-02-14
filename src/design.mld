@@ -1,0 +1,79 @@
+{1 Requirements }
+
+- Low overhead
+- Uses TSC (focus on Linux with TSC available; ignore jsoo)
+- Can substitute a "do nothing" implementation, for jsoo and elsewhere
+- Default implementation is "do nothing" except that the initialization steps (declaring
+  timers) are executed and have an effect
+  - and can call init at runtime to substitute a real TSC interface
+  - at which point, during execution the timing info is recorded (whereas with the dummy
+    impl this info would be thrown away)
+
+{1 Simple Timer Interface, for benchmarking an API for example}
+
+{[
+type timer
+
+(** At module initialization time *)
+val create_timer: ?(print_at_exit:bool (* default true *)) -> unit -> timer
+
+(** At runtime *)
+val start_timer: timer -> unit
+val stop_timer: timer -> unit
+val timer_total: timer -> int
+val timer_count: timer -> int
+
+]}
+
+
+{1 Waypoint interface}
+
+This interface allows tracking time between code points ("waypoints"), where the waypoints
+are typically points in the code tree:
+
+{[
+if x then
+  (* waypoint a *)
+  mark "a1";
+  do_something()
+  mark "a2";
+  if y then 
+    mark "b1"
+    do_something_else();
+    mark "b2"
+  else
+    mark "c1"
+    do_something_more();
+    mark "c2"
+]}
+
+We associate the waypoint strings with ints, then record a trace of int pairs, where the
+pair is [(waypoint,time)]. This takes two ints, and we write the trace into a potentially
+huge mmap'ed file (or maybe just a large array in memory; the file has the advantage that
+we don't keep on traversing it during OCaml GC). When the program finishes, we analyse
+this file to work out, for each [(pt1,pt2)] transition, the count and the total time. This
+computation may be expensive, but it takes place after everything else, so doesn't disturb
+the timings.
+
+Interface:
+
+{[
+
+(** A collection of waypoints *)
+type t
+type waypoint (* = int *)
+
+val create: 
+  ?(mark_limit:int) -> 
+  ?(use_temp_mmap:int) -> 
+  ?(pp_header:string) -> 
+  unit -> t (* at_exit, summary will be written to output *)
+val string_to_waypoint: t -> string -> waypoint
+val waypoint_to_string: t -> waypoint -> string
+
+val mark: waypoint -> unit  (* waypt has a ref back to the array *)
+val get_marks: t -> (waypoint * int) list
+
+val pp_to_string: t -> string
+
+]}
