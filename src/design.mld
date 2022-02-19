@@ -26,6 +26,18 @@ val stop_timer: timer -> unit
 val timer_total: timer -> int
 val timer_count: timer -> int
 
+val now: (unit -> int) ref (** Clock reference; can be altered by linking a profile.tsc lib *)
+
+]}
+
+Typical usage:
+
+{[
+let time ~timer (f:unit->'a) = 
+  start_timer timer;
+  let r = f () in
+  stop_timer timer;
+  r
 ]}
 
 
@@ -37,17 +49,17 @@ are typically points in the code tree:
 {[
 if x then
   (* waypoint a *)
-  mark "a1";
+  mark a1;
   do_something()
-  mark "a2";
+  mark a2;
   if y then 
-    mark "b1"
+    mark b1
     do_something_else();
-    mark "b2"
+    mark b2
   else
-    mark "c1"
+    mark c1
     do_something_more();
-    mark "c2"
+    mark c2
 ]}
 
 We associate the waypoint strings with ints, then record a trace of int pairs, where the
@@ -58,25 +70,47 @@ this file to work out, for each [(pt1,pt2)] transition, the count and the total 
 computation may be expensive, but it takes place after everything else, so doesn't disturb
 the timings.
 
+Typically we want to do this per-file, with something like 
+
+{[
+let mark,[a1;a2;b1;b2;c1;c2] = make_waypts ~name ["a1";"a2";"b1";"b2";"c1";"c2"]
+]}
+. Assume n waypts in the file.
+
+Waypts are guaranteed to be consecutive ints; maybe it is also clear from the intf that they are ints.
+
+Then this should set up a 2d array n*n (arr[a][b] is from waypt a to waypt b), with entries {count;total_time}
+
+Waypts can be any int >0
+
+We want minimal impact on the file where we use the waypts. So the above seems
+reasonable. This gets us the mark and the waypts.
+
 Interface:
 
 {[
 
 (** A collection of waypoints *)
-type t
 type waypoint (* = int *)
 
-val create: 
-  ?(mark_limit:int) -> 
-  ?(use_temp_mmap:int) -> 
-  ?(pp_header:string) -> 
-  unit -> t (* at_exit, summary will be written to output *)
-val string_to_waypoint: t -> string -> waypoint
-val waypoint_to_string: t -> waypoint -> string
+val make_waypts : __FILE__:string -> string list -> (waypt -> unit) * waypt list
 
-val mark: waypoint -> unit  (* waypt has a ref back to the array *)
-val get_marks: t -> (waypoint * int) list
+val dummy_make_waypts : (same sig)
 
-val pp_to_string: t -> string
+val print_at_exit: boolean ref (** whether to print waypts on exit; default false *)
 
 ]}
+
+Maybe we can turn off waypts altogether in the library? Not just the printing, but also
+the overhead of marking. Perhaps by default it is not enabled unless we set the envvar
+TJR_PROFILE?
+
+Locally we can then enable/disable with:
+
+{[
+let mark,[a1;a2;b1;b2;c1;c2] = (if enabled then make_waypts else make_waypts_noop) ~name ["a1";"a2";"b1";"b2";"c1";"c2"]
+
+]}
+
+
+Maybe we can provide a config file to specify which files to enable waypts for?
