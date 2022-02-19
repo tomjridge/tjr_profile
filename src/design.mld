@@ -16,9 +16,8 @@ type timer
 type name = string
 
 (** At module initialization time *)
-val create_timer: 
-?(print_at_exit:bool (* default true *)) -> 
-name -> timer
+val create_timer: ?print_at_exit:bool -> name -> timer
+val create_timer: name -> timer
 
 (** At runtime *)
 val start_timer: timer -> unit
@@ -27,6 +26,8 @@ val timer_total: timer -> int
 val timer_count: timer -> int
 
 val now: (unit -> int) ref (** Clock reference; can be altered by linking a profile.tsc lib *)
+
+val time: timer:timer -> (unit -> 'a) -> 'a
 
 ]}
 
@@ -39,6 +40,9 @@ let time ~timer (f:unit->'a) =
   stop_timer timer;
   r
 ]}
+
+Perhaps we want an even simpler way to do this without declaring a timer upfront? but
+typically f will be parameterized, so we need some link to a timer outside where we 
 
 
 {1 Waypoint interface}
@@ -108,9 +112,29 @@ TJR_PROFILE?
 Locally we can then enable/disable with:
 
 {[
-let mark,[a1;a2;b1;b2;c1;c2] = (if enabled then make_waypts else make_waypts_noop) ~name ["a1";"a2";"b1";"b2";"c1";"c2"]
+let mark,[a1;a2;b1;b2;c1;c2] = (if enabled then make_waypts else make_waypts_noop) ~name
+["a1";"a2";"b1";"b2";"c1";"c2"]
 
+(* or maybe *)
+
+let mark,[a1;a2;b1;b2;c1;c2] = make_waypts ~name ["a1";"a2";"b1";"b2";"c1";"c2"]
+let mark _ = ()
+(* and in this case we want to avoid printing the summary at exit *)
 ]}
 
 
 Maybe we can provide a config file to specify which files to enable waypts for?
+
+We can also have a library tjr_profile.config which provides now and is controller by 
+
+
+
+{1 Problems with current impl} 
+
+- tjr_profile.small is not really doing much; prefer a single publicly-visible intf
+- config via changing the config.ml file is best performance-wise, but perhaps a bit ugly
+- separating intern and mark probably not as nice as the above
+- depending on -1*pt is a bit bad in terms of future evolution of intf; 
+- impl uses a huge array which imposes start up time delay
+- pretty printing code is a bit horrible; prefer some kind of csv output
+- too many files
