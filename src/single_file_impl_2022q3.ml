@@ -142,6 +142,7 @@ module Example () = struct
   let [w1;w2;w2';w3;w3'] = mk_waypts t ["w1";"w2";"w2'";"w3";"w3'"][@@warning "-8"]
       
   let run () = 
+    Random.self_init();
     let delta = 0.1 in
     for _i=1 to 10 do
       mark w1;
@@ -166,12 +167,12 @@ module Example () = struct
 (Waypts description: Example waypt usage
 Waypts: 1,w1;2,w2;3,w2';4,w3;5,w3'
 | w   | w'  | count |  total time |   avg time |
-| w1  | w2  |     9 | 14131682821 | 1570186980 |
-| w1  | w3  |     1 |   462451867 |  462451867 |
-| w2  | w2' |     9 | 34493230385 | 3832581153 |
-| w2' | w1  |     8 |       41679 |       5209 |
-| w3  | w3' |     1 |   227305900 |  227305900 |
-| w3' | w1  |     1 |        3820 |       3820 |
+| w1  | w2  |     8 | 10552299481 | 1319037435 |
+| w1  | w3  |     2 |  3959034788 | 1979517394 |
+| w2  | w2' |     8 | 30441459175 | 3805182396 |
+| w2' | w1  |     8 |       43290 |       5411 |
+| w3  | w3' |     2 |   375524341 |  187762170 |
+| w3' | w1  |     1 |        3864 |       3864 |
 )
 *)
 
