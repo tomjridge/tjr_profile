@@ -1,7 +1,8 @@
 (** Single file minimal implementation, 2022Q3; depends on "landmarks" library for clock
     function which uses the TSC https://en.wikipedia.org/wiki/Time_Stamp_Counter (could
     also get from Jane St. libs, but they change a lot while landmarks is stable); copy
-    into a file "waypts.ml" in your project *)
+    into a file "waypts.ml" in your project. The "time" is as measured by the TSC, ie
+    something like processor cycles. *)
 
 let clock : unit -> int = fun () -> Landmark.clock () |> Int64.to_int
 
