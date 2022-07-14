@@ -30,7 +30,7 @@ module Private = struct
     let tbl = Hashtbl.create 10 in
     t.waypt_to_string |> List.iter (fun (i, s) -> Hashtbl.replace tbl i s);
     let to_string wi = Hashtbl.find tbl wi in
-    let waypts = List.init t.min_free (fun i -> i) in
+    let waypts = List.init t.min_free (fun i -> i) |> List.tl (* drop 0 *) in
     (* includes 0 *)
     let waypts_s =
       List.map (fun i -> Printf.sprintf "%d,%s" i (to_string i)) waypts
@@ -131,35 +131,44 @@ include (Private:S)
 
 module Example () = struct 
 
+  (* NOTE here we have only 1 instance; but often you need 2 or more instances within a
+     single file e.g. one instance for measuring the complete execution time of a
+     function, and another instance for waypoints within the function, to measure
+     individual sections *)
   let t = init "Example waypt usage"
 
-  let [w1;w2;w3] = mk_waypts t ["w1";"w2";"w3"][@@warning "-8"]
+  let [w1;w2;w2';w3;w3'] = mk_waypts t ["w1";"w2";"w2'";"w3";"w3'"][@@warning "-8"]
       
   let run () = 
     let delta = 0.1 in
-    for _i=0 to 10 do
+    for _i=1 to 10 do
       mark w1;
       Unix.sleepf (10.0 *. Random.float delta);
       match 0.3 < Random.float 1.0 with
       | true -> 
         mark w2;
         Unix.sleepf (20.0 *. Random.float delta);
+        mark w2';
         ()
       | false -> 
         mark w3;
         Unix.sleepf (1.0 *. Random.float delta);
+        mark w3';
         ()
     done
 
 (* Example output (with aligned cols):
-   (Waypts description: Example waypt usage
-   Waypts: 0,-,1,w1,2,w2,3,w3
-   | w  | w' | count |  total time |   avg time |
-   | w1 | w2 |    10 | 14509012017 | 1450901201 |
-   | w1 | w3 |     1 |   462086984 |  462086984 |
-   | w2 | w1 |     9 | 34495814622 | 3832868291 |
-   | w3 | w1 |     1 |   227206452 |  227206452 |
-   )
+
+(Waypts description: Example waypt usage
+Waypts: 1,w1,2,w2,3,w2',4,w3,5,w3'
+| w   | w'  | count |  total time |   avg time |
+| w1  | w2  |     9 | 14131682821 | 1570186980 |
+| w1  | w3  |     1 |   462451867 |  462451867 |
+| w2  | w2' |     9 | 34493230385 | 3832581153 |
+| w2' | w1  |     8 |       41679 |       5209 |
+| w3  | w3' |     1 |   227305900 |  227305900 |
+| w3' | w1  |     1 |        3820 |       3820 |
+)
 *)
 
   let _ = run ()  
