@@ -36,7 +36,7 @@ module Private = struct
     (* includes 0 *)
     let waypts_s =
       List.map (fun i -> Printf.sprintf "%d,%s" i (to_string i)) waypts
-      |> String.concat ","
+      |> String.concat ";"
     in
     (* for each pair (w,w') that is actually traversed, we print the count, total time and
        avg time *)
