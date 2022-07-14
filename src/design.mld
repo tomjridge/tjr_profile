@@ -128,6 +128,10 @@ Maybe we can provide a config file to specify which files to enable waypts for?
 We can also have a library tjr_profile.config which provides now and is controller by 
 
 
+{1 Printing table at end}
+
+Perhaps use printbox
+
 
 {1 Problems with current impl} 
 
