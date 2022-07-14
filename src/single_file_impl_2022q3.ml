@@ -151,15 +151,15 @@ module Example () = struct
         ()
     done
 
-(* Example output:
-(Waypts description: Example waypt usage
-Waypts: 0,-,1,w1,2,w2,3,w3
-| w | w' | count | total time | avg time |
-| w1 | w2 | 10 | 14509012017 | 1450901201 |
-| w1 | w3 | 1 | 462086984 | 462086984 |
-| w2 | w1 | 9 | 34495814622 | 3832868291 |
-| w3 | w1 | 1 | 227206452 | 227206452 |
-)
+(* Example output (with aligned cols):
+   (Waypts description: Example waypt usage
+   Waypts: 0,-,1,w1,2,w2,3,w3
+   | w  | w' | count |  total time |   avg time |
+   | w1 | w2 |    10 | 14509012017 | 1450901201 |
+   | w1 | w3 |     1 |   462086984 |  462086984 |
+   | w2 | w1 |     9 | 34495814622 | 3832868291 |
+   | w3 | w1 |     1 |   227206452 |  227206452 |
+   )
 *)
 
   let _ = run ()  
