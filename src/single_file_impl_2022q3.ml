@@ -157,6 +157,8 @@ module Example () = struct
         ()
     done
 
+  let _ = run ()  
+
 (* Example output (with aligned cols):
 
 (Waypts description: Example waypt usage
@@ -170,8 +172,6 @@ Waypts: 1,w1,2,w2,3,w2',4,w3,5,w3'
 | w3' | w1  |     1 |        3820 |       3820 |
 )
 *)
-
-  let _ = run ()  
 
 end
 
