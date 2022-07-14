@@ -164,7 +164,7 @@ module Example () = struct
 (* Example output (with aligned cols):
 
 (Waypts description: Example waypt usage
-Waypts: 1,w1,2,w2,3,w2',4,w3,5,w3'
+Waypts: 1,w1;2,w2;3,w2';4,w3;5,w3'
 | w   | w'  | count |  total time |   avg time |
 | w1  | w2  |     9 | 14131682821 | 1570186980 |
 | w1  | w3  |     1 |   462451867 |  462451867 |
