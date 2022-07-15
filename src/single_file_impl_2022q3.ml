@@ -50,7 +50,7 @@ module Private = struct
           let count, time = (t.count.(i).(j), t.time.(i).(j)) in
           if count > 0 then (
             let line =
-              Printf.sprintf "| %s | %s | %d | %d | %d |" (to_string i)
+              Printf.sprintf "| %s | %s | %#d | %#d | %#d |" (to_string i)
                 (to_string j) count time (time / count)
             in
             table := !table ^ line ^ "\n";
@@ -166,14 +166,15 @@ module Example () = struct
 
 (Waypts description: Example waypt usage
 Waypts: 1,w1;2,w2;3,w2';4,w3;5,w3'
-| w   | w'  | count |  total time |   avg time |
-| w1  | w2  |     8 | 10552299481 | 1319037435 |
-| w1  | w3  |     2 |  3959034788 | 1979517394 |
-| w2  | w2' |     8 | 30441459175 | 3805182396 |
-| w2' | w1  |     8 |       43290 |       5411 |
-| w3  | w3' |     2 |   375524341 |  187762170 |
-| w3' | w1  |     1 |        3864 |       3864 |
+| w   | w'  | count | total time     | avg time      |
+| w1  | w2  |     7 | 9_836_102_596  | 1_405_157_513 |
+| w1  | w3  |     3 | 6_246_290_484  | 2_082_096_828 |
+| w2  | w2' |     7 | 26_028_523_570 | 3_718_360_510 |
+| w2' | w1  |     6 | 31_528         | 5_254         |
+| w3  | w3' |     3 | 352_001_181    | 117_333_727   |
+| w3' | w1  |     3 | 17_791         | 5_930         |
 )
+
 *)
 
 end
