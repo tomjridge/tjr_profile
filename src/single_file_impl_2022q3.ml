@@ -177,6 +177,35 @@ Waypts: 1,w1;2,w2;3,w2';4,w3;5,w3'
 
 *)
 
+
+  (* Another example, to calibrate the TSC time measurements against "human time". *)
+
+  let t = init "Example waypt calibration"
+
+  let [w1;w2] = mk_waypts t ["w1";"w2"][@@warning "-8"]
+      
+  let run () = 
+    for _i=1 to 10 do
+      mark w1;
+      Unix.sleepf 1.0;
+      mark w2;
+    done
+
+  let _ = run ()    
+
+(* Example output:
+
+(Waypts description: Example waypt calibration
+Waypts: 1,w1;2,w2
+| w  | w' | count | total time     | avg time      |
+| w1 | w2 |    10 | 30_007_907_253 | 3_000_790_725 |
+| w2 | w1 |     9 | 47_804         | 5_311         |
+)
+
+i.e., there are roughly 3B TSC increments per second, on my local machine.
+
+*)
+
 end
 
 module _ = Example()
