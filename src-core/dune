@@ -3,5 +3,5 @@
   (public_name tjr_profile.core)
   (preprocessor_deps (file "config.ml"))
   (preprocess (pps ppx_optcomp))
-  (libraries ppx_optcomp core core.time_stamp_counter)  ;; core for TSC
+  (libraries ppx_optcomp core core_unix.time_stamp_counter unix)  ;; core for TSC
 )

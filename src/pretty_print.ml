@@ -31,7 +31,7 @@ let print_profile_summary ?(print_header="(unnamed profiler)") ~marks
 
     let f ((m1,m2),(c,t)) = t [@@ocaml.warning "-27"]
 
-    let cmp e1 e2 = Pervasives.compare (f e1) (f e2)
+    let cmp e1 e2 = Stdlib.compare (f e1) (f e2)
 
     let bindings = 
       tbl |> Hashtbl.to_seq 

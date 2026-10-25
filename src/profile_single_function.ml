@@ -39,7 +39,7 @@ let make ?(print_at_exit=true) ?(print_header="") () =
         Printf.printf "Total, count, total/count: %d, %d, %d\n" 
           !total !count (!total / !count)
       
-      let _ = if print_at_exit then Pervasives.at_exit print
+      let _ = if print_at_exit then Stdlib.at_exit print
 
       let get_stats () = { total=(!total); count=(!count) }
     end)

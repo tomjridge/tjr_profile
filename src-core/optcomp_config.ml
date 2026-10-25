@@ -27,7 +27,7 @@ let now : unit -> int =
 let profiling_use_tsc = false
 
 let now : unit -> int = 
-  let open Core_kernel in 
+  let open Core in 
   let open Time_ns in
   fun () -> now ()
             |> to_int63_ns_since_epoch

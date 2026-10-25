@@ -14,7 +14,9 @@
  (name tjr_profile)
  (synopsis "A simple profiling library")
  (depends 
-   core ;; for TSC
+   core
+   core_unix ;; for TSC
+   ppx_optcomp
 ))
 
 

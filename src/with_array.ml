@@ -106,7 +106,7 @@ let make_profiler ?(print_header="") ?(cap=10_000_000)
         Pretty_print.print_profile_summary ~print_header ~marks
           ~mark_to_string:Intern.i2s ()
         
-      let _ = if print_at_exit then Pervasives.at_exit print_summary
+      let _ = if print_at_exit then Stdlib.at_exit print_summary
     end)
     in
     {mark;get_marks;print_summary;time_thunk}

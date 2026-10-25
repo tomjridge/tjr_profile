@@ -9,6 +9,8 @@ bug-reports: "https://github.com/tomjridge/tjr_profile/issues"
 depends: [
   "dune" {>= "2.8"}
   "core"
+  "core_unix"
+  "ppx_optcomp"
   "odoc" {with-doc}
 ]
 build: [
