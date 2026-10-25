@@ -30,7 +30,7 @@ let now : unit -> int =
   let open Core in 
   let open Time_ns in
   fun () -> now ()
-            |> to_int63_ns_since_epoch
+            |> to_int_ns_since_epoch
 
 [%%endif]
 
